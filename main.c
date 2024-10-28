@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+#define cont_timer 1
 
 // Estructura de datos compartida
 typedef struct {
@@ -10,6 +11,7 @@ typedef struct {
     int frecuencia_generador;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
+    pthread_cond_t cond2;
     int tick;
 } Configuracion;
 
@@ -18,41 +20,39 @@ void* clock_thread(void* arg) {
     Configuracion* config = (Configuracion*)arg;
     while (1) {
         pthread_mutex_lock(&config->mutex);
-        config->tick++;
-        pthread_cond_signal(&config->cond);
+        while (config->tick < cont_timer ) {
+            pthread_cond_wait(&config->cond, &config->mutex);
+        }
+        if(config->tick == config->tiempo){
+            printf("Han pasado: %d segundos\n", config->tiempo / config->frecuencia);
+            config->tick = 0;
+        }
+                
+
+        pthread_cond_broadcast(&config->cond2);
         pthread_mutex_unlock(&config->mutex);
     }
     pthread_exit(NULL);
 }
+
 // Función del hilo Timer
 void* timer_thread(void* arg) {
     Configuracion* config = (Configuracion*)arg;
+
+    pthread_mutex_lock(&config->mutex);
     while (1) {
-        pthread_mutex_lock(&config->mutex);
-        while (config->tick != config->tiempo ) {
-            pthread_cond_wait(&config->cond, &config->mutex);
-        }
-        config->tick=0;
-        printf("Han pasado: %d segundos\n", config->tiempo);
-        pthread_mutex_unlock(&config->mutex);
+        config->tick++;
+
+        pthread_cond_signal(&config->cond);
+        pthread_cond_wait(&config->cond2, &config->mutex);
+
     }
     pthread_exit(NULL);
 }
-// Función del hilo Process Generator
-/*void* process_generator_thread(void* arg) {
-    Configuracion* config = (Configuracion*)arg;
-    while (1) {
-        pthread_mutex_lock(&config->mutex);
-        printf("Generando proceso en tick: %d\n", config->tick);
-        pthread_mutex_unlock(&config->mutex);
-        sleep(1000000 / config->frecuencia_generador); // Simula la generación de procesos
-    }
-    pthread_exit(NULL);
-}*/
 
 int main(int argc, char *argv[]) {
 
-        if (argc < 4) {
+    if (argc < 4) {
         printf("Parametros incorrectos: (Frecuencia hz) (Tiempo del temporizador) (Frecuencia generador de procesos)\n");
         return 1;
     }
@@ -65,6 +65,7 @@ int main(int argc, char *argv[]) {
     config.tick = 0;
     pthread_mutex_init(&config.mutex, NULL);
     pthread_cond_init(&config.cond, NULL);
+    pthread_cond_init(&config.cond2, NULL);
 
     // Crear hilos
     pthread_t clock_hilo, timer_hilo, process_generator_hilo;
@@ -78,6 +79,7 @@ int main(int argc, char *argv[]) {
         perror("Error al crear el hilo Timer");
         return 1;
     }
+
     /*if (pthread_create(&process_generator_hilo, NULL, process_generator_thread, (void*)&config) != 0) {
         perror("Error al crear el hilo Process Generator");
         return 1;
@@ -86,7 +88,7 @@ int main(int argc, char *argv[]) {
     // Esperar a que los hilos terminen (en este caso, nunca terminan)
     pthread_join(clock_hilo, NULL);
     pthread_join(timer_hilo, NULL);
-    pthread_join(process_generator_hilo, NULL);
+    //pthread_join(process_generator_hilo, NULL);
 
     // Limpiar recursos
     pthread_mutex_destroy(&config.mutex);
