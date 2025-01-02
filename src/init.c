@@ -57,74 +57,17 @@ void init_machine(args_t* args) {
 }
 
 int init_config(args_t* args) {
-    char input = '\0';
-    num_cpus = DEF_CPUS;
-    num_cores = DEF_CORES;
-    num_threads = DEF_THREADS;
 
-    printf("+-----------{\033[1;37m KERNEL SIMULATOR\033[0m }-----------+\n");
-    printf("| \033[1;37m  >                                 <   \033[0m |\n");
-    printf("| \033[1;37m    * C (Configure simulator)           \033[0m |\n");
-    printf("| \033[1;37m    * D (Launch default simulation)     \033[0m |\n");
-    printf("| \033[1;37m    * R (Run simulation)                \033[0m |\n");
-    printf("| \033[1;37m    * S (Stop simulation)               \033[0m |\n");
-    printf("| \033[1;37m    * E (Exit)                          \033[0m |\n");
-    printf("| \033[1;37m  >                                 <   \033[0m |\n");
-    printf("+------------------->  <-------------------+\n");
-
-    while (input != 'r' && input != 'R') {
-        scanf(" %c", &input);
-
-        switch (input) {
-            case 'c':
-            case 'C':
-                printf("Set the number of CPUs: ");
-                scanf("%d", &num_cpus);
-                printf("Set the number of cores per CPU: ");
-                scanf("%d", &num_cores);
-                printf("Set the number of threads per core: ");
-                scanf("%d", &num_threads);
-                printf("Set the first frequence range of process generator: ");
-                scanf("%d", &args->freq_pgen[0]);
-                printf("Set the second frequence range of process generator: ");
-                scanf("%d", &args->freq_pgen[1]);
-                printf("Set the frequence of scheduler: ");
-                scanf("%d", &args->freq_schl);
-                printf("Machine has been configured successfully\n");
-                break;
-            case 'd':
-            case 'D':
-                num_cpus = DEF_CPUS;
-                num_cores = DEF_CORES;
-                num_threads = DEF_THREADS;
-                args->freq_pgen[0] = 999;
-                args->freq_pgen[1] = 3999;
-                args->freq_schl = 5000;
-                printf("\033[1;37m");
-                printf("Default values has been set:\n");
-                printf("CPUs: %d | Cores: %d | Threads: %d\n", num_cpus, num_cores, num_threads);
-                printf("Process generator frequence: MIN %d / MAX %d \nScheduler/Dispatcher frequence %d\n", args->freq_pgen[0], args->freq_pgen[1], args->freq_schl);
-                printf("\033[0m");
-                input = 'r';
-                break;
-            case 'r':
-            case 'R':
-                printf("Running kernel simulator\n");
-                break;
-            case 's':
-            case 'S':
-                printf("First try to run the simulator\n");
-                break;
-            case 'e':
-            case 'E':
-                printf("Exit program\n");
-                return (1);
-                break;
-            default:
-                printf("(%c) is not a valid code. Please try again.\n", input);
-                break;
-        }
-    }
+    printf("Set the number of CPUs: ");
+    scanf("%d", &num_cpus);
+    printf("Set the number of cores per CPU: ");
+    scanf("%d", &num_cores);
+    printf("Set the number of threads per core: ");
+    scanf("%d", &num_threads);
+    printf("Set the frequence of scheduler: ");
+    scanf("%d", &args->freq_schl);
+    printf("Machine has been configured successfully\n");   
+    printf("Running kernel simulator\n");
     init_machine(args);
     init_processmap();
     return (0);

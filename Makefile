@@ -9,7 +9,7 @@ SRC = $(wildcard $(SRCDIR)/*.c)
 OBJ = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC))
 DEPS = $(wildcard $(INCLUDEDIR)/*.h)
 
-TARGET = kernel_simulator
+TARGET = simulador_kernel
 
 all: $(TARGET)
 
