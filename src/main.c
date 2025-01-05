@@ -66,8 +66,7 @@ int main(void) {
     int i;
 
     args_t args;
-    args.freq_pgen[0] = 999;
-    args.freq_pgen[1] = 3999;
+    args.freq_pgen = 1000;
     args.freq_schl = 5000;
     args.done = 0;
     args.finished = 0;

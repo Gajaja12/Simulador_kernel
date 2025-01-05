@@ -58,16 +58,18 @@ void init_machine(args_t* args) {
 
 int init_config(args_t* args) {
 
-    printf("Set the number of CPUs: ");
+    printf("Establece la cantidad de CPUs: ");
     scanf("%d", &num_cpus);
-    printf("Set the number of cores per CPU: ");
+    printf("Establece los cores por CPU: ");
     scanf("%d", &num_cores);
-    printf("Set the number of threads per core: ");
+    printf("Establece el número de hilos por núcleo: ");
     scanf("%d", &num_threads);
-    printf("Set the frequence of scheduler: ");
+    printf("Establece la frecuencia del scheduler: ");
     scanf("%d", &args->freq_schl);
-    printf("Machine has been configured successfully\n");   
-    printf("Running kernel simulator\n");
+    printf("Establece la frecuencia del procces_generator: ");
+    scanf("%d", &args->freq_pgen);
+    printf("Maquina configurada correctamente\n");   
+    printf("Iniciando simulador kernel\n");
     init_machine(args);
     init_processmap();
     return (0);

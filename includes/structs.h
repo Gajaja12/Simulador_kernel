@@ -109,7 +109,7 @@ typedef struct {
 /* -- MACHINE -- */
 
 typedef struct {
-    int freq_pgen[2];
+    int freq_pgen;
     int freq_schl;
     int done;
     int finished;

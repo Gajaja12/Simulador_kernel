@@ -151,14 +151,13 @@ void *timer1(void *arguments) {
     pthread_mutex_lock(&mutex);
     args_t *args = arguments;
     int pulses = 0;
-    int freq_pgen = args->freq_pgen[0] + rand() % (args->freq_pgen[1] - args->freq_pgen[0] + 1);
+    int freq_pgen = args->freq_pgen;
 
     while (1) {
         args->done++;
         pulses++;
         if (pulses == freq_pgen) {
             pulses = 0;
-            freq_pgen = args->freq_pgen[0] + rand() % (args->freq_pgen[1] - args->freq_pgen[0] + 1);
             loader(&args->machine);
         }
         pthread_cond_signal(&cond1);
